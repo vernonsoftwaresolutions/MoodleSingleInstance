@@ -1,31 +1,29 @@
-machine:
-  python:
-    version: 2.7.11
-  ruby:
-    version: 2.4.0  
-  services:
+--- 
+machine: 
+  python: 
+    version: "2.7.11"
+  ruby: 
+    version: "2.4.0"
+  services: 
     - docker
-
-dependencies:
-  override:
-    - docker info
-    - docker build --rm=false -t vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM .
-
-test:
-  post:
-    - docker run -d -p 80:80 -e "VIRTUAL_HOST=localhost" --name moodle vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM; sleep 10
-  #  - docker run --name moodle vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM -e VIRTUAL_HOST=localhost -d -t -p 80 -p 22 ; sleep 10
-    - docker ps
-    - docker images
-    - docker port moodle
-    - curl -L http://localhost/moodle
-
-deployment:
-  development:
+    
+dependencies: 
+  override: 
+    - "docker info"
+    - "docker build --rm=false -t vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM ."
+deployment: 
+  development: 
     branch: master
     commands: 
-      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS 
-      - docker push vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM
-      -	aws --version
-	    - aws configure set default.region us-west-2
-	    - aws configure set default.output json      
+      - "docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS"
+      - "docker push vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM"
+      - "aws configure set default.region us-west-2"
+      - "aws configure set default.output json"
+
+test: 
+  post: 
+    - "docker run -d -p 80:80 -e \"VIRTUAL_HOST=localhost\" --name moodle vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM; sleep 10"
+    - "docker ps"
+    - "docker images"
+    - "docker port moodle"
+    - "curl -L http://localhost/moodle"
