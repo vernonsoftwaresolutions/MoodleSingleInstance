@@ -25,4 +25,3 @@ deployment:
     commands: 
       - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS 
       - docker push vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM
-      - sh ./deploy.sh $EB_BUCKET $CIRCLE_BUILD_NUM
