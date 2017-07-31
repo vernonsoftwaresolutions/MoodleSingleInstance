@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Parameters:
+  Version:
+    Type: String
+Resources:
+  #todo- this needs to be cleaned up to "least priviledge"
+  RootRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "ec2.amazonaws.com"
+            Action:
+              - "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        -
+          PolicyName: "root"
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Effect: "Allow"
+                Action: "*"
+                Resource: "*"
+  MoodleCluster:
+    Type: "AWS::ECS::Cluster"
+
+  SingleInstance:
+    Type: AWS::ECS::Service
+    #DependsOn:
+    #todo- listener
+   # - Listener
+    Properties:
+      Role:
+        Ref: RootRole
+      TaskDefinition:
+        Ref: SingleInstanceTaskDefinition
+      DesiredCount: 1
+      LoadBalancers:
+      - TargetGroupArn:
+          #todo-taget group
+          Ref: TargetGroup
+        ContainerPort: 80
+        ContainerName: moodlesingle
+      Cluster:
+        Ref: MoodleCluster
+
+  SingleInstanceTaskDefinition: 
+    Type: "AWS::ECS::TaskDefinition"
+    Properties: 
+      ContainerDefinitions: 
+        - 
+          Name: 
+            Ref: "SingleInstance"
+  #        MountPoints: 
+  #          - 
+  #            SourceVolume: "my-vol"
+  #            ContainerPath: "/var/www/my-vol"
+          Image: !Join [":", [vernonsoftwaresolutions/moodlesingleinstance, !Ref Version]]
+          Cpu: "10"
+          PortMappings: 
+            - 
+              ContainerPort: 80 # todo- use ref of something?
+              HostPort: 80 #todo- same as above
+          Memory: "500"
+          Essential: "true"      
+ #     Volumes: 
+ #       - 
+ #         Host: 
+ #           SourcePath: "/var/lib/docker/vfs/dir/"
+ #         Name: "my-vol"

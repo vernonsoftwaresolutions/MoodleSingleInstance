@@ -26,11 +26,12 @@ if [ ! -f /var/www/html/moodle/config.php ]; then
   sed -i 's/PermitRootLogin without-password/PermitRootLogin Yes/' /etc/ssh/sshd_config
 
   chown www-data:www-data /var/www/html/moodle/config.php
-
+  chown -R mysql /var/lib/mysql
+  chgrp -R mysql /var/lib/mysql
+#  usermod -d /var/lib/mysql/ mysql
   mysqladmin -u root password $MYSQL_PASSWORD
   mysql -uroot -p$MYSQL_PASSWORD -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
   mysql -uroot -p$MYSQL_PASSWORD -e "CREATE DATABASE moodle; GRANT ALL PRIVILEGES ON moodle.* TO 'moodle'@'localhost' IDENTIFIED BY '$MOODLE_PASSWORD'; FLUSH PRIVILEGES;"
-  mysqld --initialize
   killall mysqld
 fi
 # start all the services
