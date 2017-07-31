@@ -13,8 +13,9 @@ dependencies:
 
 test:
   post:
-    - docker run -d -p 80:80 --name moodle vernonsoftwaresolutions/moodleapache:$CIRCLE_BUILD_NUM; sleep 10
+    - docker run -d -p 80:80 --name moodle vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM; sleep 10
     - docker ps
+    - docker images
     - docker port moodle
     - curl -L http://localhost/moodle
 
