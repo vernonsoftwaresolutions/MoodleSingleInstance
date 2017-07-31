@@ -1,0 +1,27 @@
+machine:
+  python:
+    version: 2.7.11
+  ruby:
+    version: 2.4.0  
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker info
+    - docker build --rm=false -t vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM .
+
+test:
+  post:
+    - docker run -d -p 80:80 --name moodle vernonsoftwaresolutions/moodleapache:$CIRCLE_BUILD_NUM; sleep 10
+    - docker ps
+    - docker port moodle
+    - curl -L http://localhost/moodle
+
+deployment:
+  development:
+    branch: master
+    commands: 
+      - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS 
+      - docker push vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM
+      - sh ./deploy.sh $EB_BUCKET $CIRCLE_BUILD_NUM
