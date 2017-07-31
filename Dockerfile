@@ -22,7 +22,13 @@ RUN echo 'extension=zip.so' >> /etc/php/7.0/apache2/php.ini
 # SSH
 RUN apt-get -y install openssh-server
 RUN mkdir -p /var/run/sshd
+# apache required dirs
+RUN mkdir -p /var/run/apache2
+RUN mkdir -p /var/lock/apache2
 
+# mysql required dirs
+RUN mkdir -p /var/run/mysqld
+RUN chown mysql /var/run/mysqld
 # mysql config
 RUN sed -i -e"s/^bind-address\s*=\s*127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
@@ -31,7 +37,7 @@ ADD ./start.sh /start.sh
 ADD ./foreground.sh /etc/apache2/foreground.sh
 ADD ./supervisord.conf /etc/supervisord.conf
 
-ADD https://download.moodle.org/stable33/moodle-3.3.tgz /var/www/moodle-latest.tgz
+ADD https://download.moodle.org/stable33/moodle-latest-33.tgz /var/www/moodle-latest.tgz
 RUN cd /var/www; tar zxvf moodle-latest.tgz; mv /var/www/moodle /var/www/html
 RUN chown -R www-data:www-data /var/www/html/moodle
 RUN mkdir /var/moodledata
