@@ -3,10 +3,11 @@ docker-moodle
 
 A Dockerfile that installs the latest Moodle, Apache, PHP, MySQL and SSH
 
+Thanks to [eugeneware](https://github.com/eugeneware) and [ricardoamaro](https://github.com/ricardoamaro) for their Dockerfiles.
+
 ## Installation
 
 ```
-git clone https://github.com/sergiogomez/docker-moodle.git
 cd docker-moodle
 docker build -t moodle .
 ```
@@ -25,4 +26,3 @@ You can visit the following URL in a browser to get started:
 http://moodle.domain.com/moodle
 ```
 
-Thanks to [eugeneware](https://github.com/eugeneware) and [ricardoamaro](https://github.com/ricardoamaro) for their Dockerfiles.
