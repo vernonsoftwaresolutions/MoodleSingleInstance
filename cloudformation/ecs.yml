@@ -1,6 +1,6 @@
 #usage:
 #aws cloudformation package --template-file cloudformation/ecs.yml --output-template-file ecs-output.yml --s3-bucket circleci.deployables
-#aws cloudformation deploy --template-file ecs-output.yml --capabilities CAPABILITY_IAM --stack-name moodle-ecs-single --parameter-overrides Version=12 KeyName=dummy_key1 VpcId=vpc-c7aa77be SubnetId=subnet-b61d81fe,subnet-0202dc58 InstanceType=t2.medium
+#aws cloudformation deploy --template-file ecs-output.yml --capabilities CAPABILITY_IAM --stack-name moodle-ecs-single --parameter-overrides Version=12 KeyName=dummy_key1 VpcId=vpc-c7aa77be SubnetId=subnet-b61d81fe,subnet-0202dc58 InstanceType=t2.medium DockerRespository=vernonsoftwaresolutions/moodlesingleinstance
 
 #vpc-c7aa77be
 #subnet-b61d81fe,subnet-0202dc58
@@ -36,6 +36,10 @@ Parameters:
       c3.2xlarge, c3.4xlarge, c3.8xlarge, r3.large, r3.xlarge, r3.2xlarge, r3.4xlarge,
       r3.8xlarge, i2.xlarge, i2.2xlarge, i2.4xlarge, i2.8xlarge]
     ConstraintDescription: Please choose a valid instance type.
+  DockerRepository:
+    Description: Repository containing docker images
+    Type: String
+
 Mappings:
   AWSRegionToAMI:
     us-east-1:
@@ -203,6 +207,9 @@ Resources:
     Properties:
       Cluster: !Ref 'ECSCluster'
       DesiredCount: '1'
+      DeploymentConfiguration: 
+        MaximumPercent: 200
+        MinimumHealthyPercent: 0
       LoadBalancers:
       - ContainerName: moodleinstance
         ContainerPort: '80'
