@@ -28,4 +28,4 @@ deployment:
       - "aws configure set default.region us-east-1"
       - "aws configure set default.output json"
       - "aws cloudformation package --template-file cloudformation/ecs.yml --output-template-file ecs-output.yml --s3-bucket circleci.deployables"
-      - "aws cloudformation deploy --template-file ecs-output.yml --capabilities CAPABILITY_IAM --stack-name moodle-ecs-single --parameter-overrides Version=$CIRCLE_BUILD_NUM KeyName=dummy_key1 VpcId=vpc-c7aa77be SubnetId=subnet-b61d81fe,subnet-0202dc58 InstanceType=t2.medium DockerRespository=vernonsoftwaresolutions/moodlesingleinstance"
+      - "aws cloudformation deploy --template-file ecs-output.yml --capabilities CAPABILITY_IAM --stack-name moodle-ecs-single --parameter-overrides Version=$CIRCLE_BUILD_NUM KeyName=dummy_key1 VpcId=vpc-c7aa77be SubnetId=subnet-b61d81fe,subnet-0202dc58 InstanceType=t2.medium"
