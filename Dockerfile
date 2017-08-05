@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:16.10
 MAINTAINER Sergio Gómez <sergio@quaip.com>
 
 # Keep upstart from complaining
@@ -15,8 +15,8 @@ RUN apt-get -y upgrade
 RUN apt-get -y install mysql-server mysql-client pwgen python-setuptools curl git unzip
 
 # Moodle Requirements
-RUN apt-get -y install apache2 php php-gd libapache2-mod-php postfix wget supervisor php-pgsql vim curl libcurl3 libcurl3-dev php-curl php-xmlrpc php-intl php-mysql php-mbstring php-soap
-RUN apt-get install php7.0-xml -y
+RUN apt-get -y install apache2 postfix wget supervisor vim curl libcurl3 libcurl3-dev
+RUN apt-get -y install php php-mysql php-xml php-curl php-zip php-gd php-xmlrpc php-soap php-mbstring php-intl
 #add zip extension
 RUN echo 'extension=zip.so' >> /etc/php/7.0/apache2/php.ini 
 # SSH
