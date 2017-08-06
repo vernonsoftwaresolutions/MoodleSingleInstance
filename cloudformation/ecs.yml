@@ -1,6 +1,6 @@
 #usage:
 #aws cloudformation package --template-file cloudformation/ecs.yml --output-template-file ecs-output.yml --s3-bucket circleci.deployables
-#aws cloudformation deploy --template-file ecs-output.yml --capabilities CAPABILITY_IAM --stack-name moodle-ecs-single --parameter-overrides Version=12 KeyName=dummy_key1 VpcId=vpc-c7aa77be SubnetId=subnet-b61d81fe,subnet-0202dc58 InstanceType=t2.medium DockerRespository=vernonsoftwaresolutions/moodlesingleinstance
+#aws cloudformation deploy --template-file ecs-output.yml --capabilities CAPABILITY_IAM --stack-name moodle-ecs-single --parameter-overrides Version=12 KeyName=dummy_key1 VpcId=vpc-c7aa77be SubnetId=subnet-b61d81fe,subnet-0202dc58 InstanceType=t2.medium DNSName=moodle.vssdevelopment.com HostedZoneName=vssdevelopment.com DockerRespository=vernonsoftwaresolutions/moodlesingleinstance
 
 #vpc-c7aa77be
 #subnet-b61d81fe,subnet-0202dc58
@@ -36,6 +36,11 @@ Parameters:
       c3.2xlarge, c3.4xlarge, c3.8xlarge, r3.large, r3.xlarge, r3.2xlarge, r3.4xlarge,
       r3.8xlarge, i2.xlarge, i2.2xlarge, i2.4xlarge, i2.8xlarge]
     ConstraintDescription: Please choose a valid instance type.
+  DNSName:
+    Type: String
+  HostedZoneName:
+    Type: String
+    Description: Name of hosted zone
   #DockerRepository:
    # Description: Repository containing docker images
     #Type: String
@@ -116,7 +121,7 @@ Resources:
         - "DB:DB"
         Environment:
         - Name: MOODLE_URL
-          Value: !GetAtt ECSALB.DNSName
+          Value: !Join ["", ["'http://", !Ref DNSName , "'"]]
         - Name: DB_PORT_3306_TCP_ADDR
           Value: DB
         - Name: DB_ENV_MYSQL_DATABASE
@@ -127,17 +132,8 @@ Resources:
           Value: moodle
         - Name: DB_PORT_3306_TCP_PORT
           Value: 3306
- #     Volumes: 
- #       - 
- #         Host: 
- #           SourcePath: "/var/lib/docker/vfs/dir/"
- #         Name: "my-vol"
       - 
         Name: "DB"
-#        MountPoints: 
-#          - 
-#            SourceVolume: "my-vol"
-#            ContainerPath: "/var/www/my-vol"
         Image: centurylink/mysql
         Cpu: "50"
         PortMappings: 
@@ -153,7 +149,20 @@ Resources:
           Value: moodle
         - Name: MYSQL_DATABASE
           Value: moodle
-
+  # Record Set for moodle instance
+  MoodleDNS:
+      Type: AWS::Route53::RecordSetGroup
+      Properties:
+        HostedZoneName:
+          Ref: HostedZoneName
+        Comment: Zone apex alias targeted to Gitlab.
+        RecordSets:
+        - Name:
+            !Join [".", [ !Ref DNSName , ""]]
+          Type: A
+          AliasTarget:
+            HostedZoneId: !GetAtt ECSALB.CanonicalHostedZoneNameID
+            DNSName: !GetAtt ECSALB.DNSName
   ECSALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -236,6 +245,7 @@ Resources:
     DependsOn: 
       - ALBListener
       - ECSAutoScalingGroup
+      - MoodleDNS
     Properties:
       Cluster: !Ref 'ECSCluster'
       DesiredCount: '1'
