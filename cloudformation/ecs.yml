@@ -144,7 +144,7 @@ Resources:
           - 
             ContainerPort: 3306 # todo- use ref of something?
             HostPort: 3306 #todo- same as above
-        Memory: "1000"
+        Memory: "2000"
         Essential: "true"  
         Environment:
         - Name: MYSQL_USER
