@@ -112,7 +112,8 @@ Resources:
             HostPort: 80 #todo- same as above
         Memory: "1000"
         Essential: "false"  
-        Links: "DB:DB"
+        Links: 
+        - "DB:DB"
         Environment:
         - Name: MOODLE_URL
           Value: !GetAtt ECSALB.DNSName
