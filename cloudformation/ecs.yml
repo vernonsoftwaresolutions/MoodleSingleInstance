@@ -115,7 +115,7 @@ Resources:
           - 
             ContainerPort: 80 # todo- use ref of something?
             HostPort: 80 #todo- same as above
-        Memory: "1000"
+        Memory: "500"
         Essential: "false"  
         Links: 
         - "DB:DB"
@@ -140,7 +140,7 @@ Resources:
           - 
             ContainerPort: 3306 # todo- use ref of something?
             HostPort: 3306 #todo- same as above
-        Memory: "2000"
+        Memory: "500"
         Essential: "true"  
         Environment:
         - Name: MYSQL_USER
