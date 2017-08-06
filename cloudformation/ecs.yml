@@ -151,6 +151,8 @@ Resources:
           Value: moodle
         - Name: MYSQL_PASSWORD
           Value: moodle
+        - Name: MYSQL_DATABASE
+          Value: moodle
 
   ECSALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
