@@ -21,7 +21,7 @@ test:
     - "curl -L http://localhost/moodle"
 deployment: 
   development: 
-    branch: master
+    branch: moodle29
     commands: 
       - "docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS"
       - "docker push vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM"
