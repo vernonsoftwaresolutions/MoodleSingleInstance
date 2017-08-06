@@ -1,6 +1,6 @@
 #usage:
 #aws cloudformation package --template-file cloudformation/ecs.yml --output-template-file ecs-output.yml --s3-bucket circleci.deployables
-#aws cloudformation deploy --template-file ecs-output.yml --capabilities CAPABILITY_IAM --stack-name moodle-ecs-single --parameter-overrides Version=12 KeyName=dummy_key1 VpcId=vpc-c7aa77be SubnetId=subnet-b61d81fe,subnet-0202dc58 InstanceType=t2.medium DNSName=moodle.vssdevelopment.com HostedZoneName=vssdevelopment.com DockerRespository=vernonsoftwaresolutions/moodlesingleinstance
+#aws cloudformation deploy --template-file ecs-output.yml --capabilities CAPABILITY_IAM --stack-name moodle-ecs-single --parameter-overrides Version=12 KeyName=dummy_key1 VpcId=vpc-c7aa77be SubnetId=subnet-b61d81fe,subnet-0202dc58 InstanceType=t2.medium DNSName=moodle.vssdevelopment.com HostedZoneName=vssdevelopment.com. DockerRespository=vernonsoftwaresolutions/moodlesingleinstance
 
 #vpc-c7aa77be
 #subnet-b61d81fe,subnet-0202dc58
@@ -179,7 +179,7 @@ Resources:
     Properties:
       DefaultActions:
       - Type: forward
-        TargetGroupArn: !Ref 'ECSTG'
+        TargetGroupArn: !Ref 'ECSTARGRP'
       LoadBalancerArn: !Ref 'ECSLB'
       Port: '80'
       Protocol: HTTP
@@ -189,13 +189,13 @@ Resources:
     Properties:
       Actions:
       - Type: forward
-        TargetGroupArn: !Ref 'ECSTG'
+        TargetGroupArn: !Ref 'ECSTARGRP'
       Conditions:
       - Field: path-pattern
         Values: [/]
       ListenerArn: !Ref 'ALBListener'
       Priority: 1
-  ECSTG:
+  ECSTARGRP:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     DependsOn: ECSLB
     Properties:
@@ -204,7 +204,7 @@ Resources:
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
-      Name: ECSTG
+      Name: ECSTARGRP
       Port: 80
       Protocol: HTTP
       UnhealthyThresholdCount: 2
@@ -255,7 +255,7 @@ Resources:
       LoadBalancers:
       - ContainerName: moodle
         ContainerPort: '80'
-        TargetGroupArn: !Ref 'ECSTG'
+        TargetGroupArn: !Ref 'ECSTARGRP'
       Role: !Ref 'ECSServiceRole'
       TaskDefinition: !Ref 'taskdefinition'
   ECSServiceRole:
