@@ -103,12 +103,8 @@ Resources:
       Family: !Join ['', [!Ref 'AWS::StackName', -ecs-moodle]]
       ContainerDefinitions: 
       - 
-        Name: "moodleinstance"
-#        MountPoints: 
-#          - 
-#            SourceVolume: "my-vol"
-#            ContainerPath: "/var/www/my-vol"
-        Image: !Join [":", [vernonsoftwaresolutions/moodlesingleinstance, !Ref Version]]
+        Name: "moodle"
+        Image: jauer/moodle
         Cpu: "10"
         PortMappings: 
           - 
@@ -117,13 +113,33 @@ Resources:
         Memory: "500"
         Essential: "true"  
         Environment:
-        - Name: VIRTUAL_HOST
+        - Name: MOODLE_URL
           Value: !GetAtt ECSALB.DNSName
  #     Volumes: 
  #       - 
  #         Host: 
  #           SourcePath: "/var/lib/docker/vfs/dir/"
  #         Name: "my-vol"
+      - 
+        Name: "DB"
+#        MountPoints: 
+#          - 
+#            SourceVolume: "my-vol"
+#            ContainerPath: "/var/www/my-vol"
+        Image: centurylink/mysql
+        Cpu: "10"
+        PortMappings: 
+          - 
+            ContainerPort: 3306 # todo- use ref of something?
+            HostPort: 3306 #todo- same as above
+        Memory: "500"
+        Essential: "true"  
+        Environment:
+        - Name: MYSQL_USER
+          Value: moodle
+        - Name: MYSQL_PASSWORD
+          Value: moodle
+
   ECSALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -211,7 +227,7 @@ Resources:
         MaximumPercent: 200
         MinimumHealthyPercent: 0
       LoadBalancers:
-      - ContainerName: moodleinstance
+      - ContainerName: moodle
         ContainerPort: '80'
         TargetGroupArn: !Ref 'ECSTG'
       Role: !Ref 'ECSServiceRole'
