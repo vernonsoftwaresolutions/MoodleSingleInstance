@@ -161,12 +161,12 @@ Resources:
             !Join [".", [ !Ref DNSName , ""]]
           Type: A
           AliasTarget:
-            HostedZoneId: !GetAtt ECSALB.CanonicalHostedZoneID
-            DNSName: !GetAtt ECSALB.DNSName
-  ECSALB:
+            HostedZoneId: !GetAtt ECSLB.CanonicalHostedZoneID
+            DNSName: !GetAtt ECSLB.DNSName
+  ECSLB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
-      Name: ECSALB
+      Name: ECSLB
       Scheme: internet-facing
       LoadBalancerAttributes:
       - Key: idle_timeout.timeout_seconds
@@ -180,10 +180,10 @@ Resources:
       DefaultActions:
       - Type: forward
         TargetGroupArn: !Ref 'ECSTG'
-      LoadBalancerArn: !Ref 'ECSALB'
+      LoadBalancerArn: !Ref 'ECSLB'
       Port: '80'
       Protocol: HTTP
-  ECSALBListenerRule:
+  ECSLBListenerRule:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     DependsOn: ALBListener
     Properties:
@@ -197,7 +197,7 @@ Resources:
       Priority: 1
   ECSTG:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    DependsOn: ECSALB
+    DependsOn: ECSLB
     Properties:
       HealthCheckIntervalSeconds: 10
       HealthCheckPath: /
@@ -362,8 +362,8 @@ Outputs:
     Value: !Ref 'service'
   ecscluster:
     Value: !Ref 'ECSCluster'
-  ECSALB:
+  ECSLB:
     Description: Your ALB DNS URL
-    Value: !Join ['', [!GetAtt [ECSALB, DNSName]]]
+    Value: !Join ['', [!GetAtt [ECSLB, DNSName]]]
   taskdef:
     Value: !Ref 'taskdefinition'
