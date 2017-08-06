@@ -161,7 +161,7 @@ Resources:
             !Join [".", [ !Ref DNSName , ""]]
           Type: A
           AliasTarget:
-            HostedZoneId: !GetAtt ECSALB.CanonicalHostedZoneNameID
+            HostedZoneId: !GetAtt ECSALB.CanonicalHostedZoneID
             DNSName: !GetAtt ECSALB.DNSName
   ECSALB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
