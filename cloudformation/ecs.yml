@@ -111,7 +111,7 @@ Resources:
             ContainerPort: 80 # todo- use ref of something?
             HostPort: 80 #todo- same as above
         Memory: "1000"
-        Essential: "true"  
+        Essential: "false"  
         Environment:
         - Name: MOODLE_URL
           Value: !GetAtt ECSALB.DNSName
