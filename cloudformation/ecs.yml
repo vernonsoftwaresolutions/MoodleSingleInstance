@@ -201,8 +201,6 @@ Resources:
       Path: /
       Roles: [!Ref 'EC2Role']
 Outputs:
-  ecsservice:
-    Value: !Ref 'service'
   ecscluster:
     Value: !Ref 'ECSCluster'
   ecslbdnsname:
@@ -217,5 +215,3 @@ Outputs:
   ecslblistener:
     Description: elb listener
     Value: !Ref 'ALBListener'
-  taskdef:
-    Value: !Ref 'taskdefinition'
