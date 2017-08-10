@@ -166,9 +166,6 @@ Outputs:
   ecslbhostedzoneid:
     Description: Your ALB DNS Hosted Zone Id
     Value: !Join ['', [!GetAtt [ECSLB, CanonicalHostedZoneID]]]
-  ecslblistener:
-    Description: elb listener
-    Value: !Ref 'ALBListener'
   ecslbarn:
     Description: Load balancer arn
     Value: !Ref 'ECSLB'
