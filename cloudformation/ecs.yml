@@ -103,49 +103,6 @@ Resources:
       Subnets: !Ref 'SubnetId'
       SecurityGroups: [!Ref 'EcsSecurityGroup']
 
-  ALBListener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
-    #DependsOn: ECSServiceRole      Why is this needed??
-    Properties:
-      DefaultActions:
-      - Type: forward
-        TargetGroupArn: !Ref 'ECSTARGRP'
-      LoadBalancerArn: !Ref 'ECSLB'
-      Port: '80'
-      Protocol: HTTP
-
-  #todo- remove this?
-  ECSLBListenerRule:
-    Type: AWS::ElasticLoadBalancingV2::ListenerRule
-    DependsOn: ALBListener
-    Properties:
-      Actions:
-      - Type: forward
-        TargetGroupArn: !Ref 'ECSTARGRP'
-      Conditions:
-      - Field: path-pattern
-        Values: [/]
-      ListenerArn: !Ref 'ALBListener'
-      Priority: 1
-      
-  ECSTARGRP:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    DependsOn: ECSLB
-    Properties:
-      HealthCheckIntervalSeconds: 10
-      HealthCheckPath: /
-      HealthCheckProtocol: HTTP
-      HealthCheckTimeoutSeconds: 5
-      HealthyThresholdCount: 2
-      Name: ECSTARGRP
-      Port: 80
-      Protocol: HTTP
-      UnhealthyThresholdCount: 2
-      TargetGroupAttributes:
-      - Key: deregistration_delay.timeout_seconds
-        Value: '20'
-      VpcId: !Ref 'VpcId'
-
   ECSAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
@@ -209,9 +166,9 @@ Outputs:
   ecslbhostedzoneid:
     Description: Your ALB DNS Hosted Zone Id
     Value: !Join ['', [!GetAtt [ECSLB, CanonicalHostedZoneID]]]
-  ecslbarn:
-    Description: Load balancer arn
-    Value: !Ref 'ECSTARGRP'
   ecslblistener:
     Description: elb listener
     Value: !Ref 'ALBListener'
+  ecslbarn:
+    Description: Load balancer arn
+    Value: !Ref 'ECSLB'
