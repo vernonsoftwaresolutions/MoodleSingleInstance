@@ -103,6 +103,35 @@ Resources:
       Subnets: !Ref 'SubnetId'
       SecurityGroups: [!Ref 'EcsSecurityGroup']
 
+  #create listener and default target group
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    #DependsOn: ECSServiceRole      Why is this needed??
+    Properties:
+      DefaultActions:
+      - Type: forward
+        TargetGroupArn: !Ref 'DEFAULTECSTARGRP'
+      LoadBalancerArn: !Ref 'ECSLB'
+      Port: '80'
+      Protocol: HTTP
+
+  DEFAULTECSTARGRP:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: /
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      Name: "DEFAULT"
+      Port: 80
+      Protocol: HTTP
+      UnhealthyThresholdCount: 2
+      TargetGroupAttributes:
+      - Key: deregistration_delay.timeout_seconds
+        Value: '20'
+      VpcId: !Ref 'VpcId'
+
   ECSAutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
