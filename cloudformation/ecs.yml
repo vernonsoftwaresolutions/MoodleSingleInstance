@@ -198,3 +198,6 @@ Outputs:
   ecslbarn:
     Description: Load balancer arn
     Value: !Ref 'ECSLB'
+  alblistener:
+    Description: Applicaiton Load Balancer listener
+    Value: !Ref ALBListener
