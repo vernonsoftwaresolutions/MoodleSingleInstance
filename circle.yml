@@ -22,6 +22,6 @@ deployment:
   development: 
     branch: moodle29
     commands: 
-      - aws s3 cp cloudformation/ecs.yml s3://moodle.templates/ecs
+      - aws s3 cp cloudformation/ecs.yml s3://moodle.templates/ecs.yml
       - aws cloudformation delete-stack --stack-name moodle-ecs-single
      
