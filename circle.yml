@@ -14,14 +14,11 @@ dependencies:
 
 test: 
   post: 
-    - "aws cloudformation validate-template --template-body file://cloudformation/ecs.yml"
-    - "aws cloudformation package --template-file cloudformation/ecs.yml --output-template-file ecs-output.yml --s3-bucket circleci.deployables"
-    - "aws cloudformation deploy --template-file ecs-output.yml --capabilities CAPABILITY_IAM --stack-name moodle-ecs-single --parameter-overrides KeyName=dummy_key1 VpcId=vpc-c7aa77be SubnetId=subnet-b61d81fe,subnet-0202dc58 InstanceType=t2.medium "
-
+    - sh ./cloudformation_test.sh moodle-ecs-single tenant1 tenant2
 deployment: 
   development: 
     branch: moodle29
     commands: 
-      - aws s3 cp cloudformation/ecs.yml s3://moodle.templates/ecs.yml
-      - aws cloudformation delete-stack --stack-name moodle-ecs-single
-     
+      - aws s3 cp cloudformation/ecs.yml s3://moodle.templates/ecs/ecs.yml
+      - aws s3 cp cloudformation/moodle_tenant.yml s3://moodle.templates/ecstenant/moodle_tenant.yml
+      - sh ./cleanup.sh moodle-ecs-single tenant1 tenant2
