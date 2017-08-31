@@ -18,7 +18,7 @@ ecslbhostedzoneid=`aws cloudformation describe-stacks --stack-name vpctenant1 --
 alblistener=`aws cloudformation describe-stacks --stack-name vpctenant1 --query "Stacks[0].[Outputs[? starts_with(OutputKey, 'alblistener')]][0][*].{OutputValue:OutputValue}" --output text`
 
 #package and deploy an instance
-aws cloudformation package --template-file cloudformation/moodletenant.yml --output-template-file moodletenant-output.yml \
+aws cloudformation package --template-file cloudformation/moodle_tenant.yml --output-template-file moodletenant-output.yml \
  --s3-bucket circleci.deployables
 aws cloudformation deploy --template-file moodletenant-output.yml --capabilities \
  CAPABILITY_IAM --stack-name "${moodle1}" --parameter-overrides \
@@ -27,7 +27,7 @@ aws cloudformation deploy --template-file moodletenant-output.yml --capabilities
  HostedZoneName=vssdevelopment.com  ClientName=brad
 #just send basic test
 curl http://brad.vssdevelopment.com/
-aws cloudformation package --template-file cloudformation/moodletenant.yml --output-template-file moodletenant-output.yml --s3-bucket \
+aws cloudformation package --template-file cloudformation/moodle_tenant.yml --output-template-file moodletenant-output.yml --s3-bucket \
     circleci.deployables
 aws cloudformation deploy --template-file moodletenant-output.yml --capabilities CAPABILITY_IAM --stack-name "${moodle2}" \
  --parameter-overrides VpcId=vpc-c7aa77be Priority=2 ecscluster="${ecscluster}" ecslbarn="${ecslbarn}"	ecslbdnsname="${ecslbdnsname}" \
