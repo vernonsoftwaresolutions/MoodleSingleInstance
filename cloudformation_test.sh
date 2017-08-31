@@ -11,11 +11,11 @@ aws cloudformation validate-template --template-body file://cloudformation/moodl
 aws cloudformation package --template-file cloudformation/ecs.yml --output-template-file ecs-output.yml --s3-bucket circleci.deployables
 aws cloudformation deploy --template-file ecs-output.yml --capabilities CAPABILITY_IAM --stack-name "${ecstemplate}" --parameter-overrides KeyName=dummy_key1 VpcId=vpc-c7aa77be SubnetId=subnet-b61d81fe,subnet-0202dc58 InstanceType=t2.medium 
 #Get output values, this is a soemwhat naive approach since it is a lot of api calls
-ecscluster=aws cloudformation describe-stacks --stack-name vpctenant1 --query "Stacks[0].[Outputs[? starts_with(OutputKey, 'ecscluster')]][0][*].{OutputValue:OutputValue}" --output text
-ecslbarn=aws cloudformation describe-stacks --stack-name vpctenant1 --query "Stacks[0].[Outputs[? starts_with(OutputKey, 'ecslbarn')]][0][*].{OutputValue:OutputValue}" --output text
-ecslbdnsname=aws cloudformation describe-stacks --stack-name vpctenant1 --query "Stacks[0].[Outputs[? starts_with(OutputKey, 'ecslbdnsname')]][0][*].{OutputValue:OutputValue}" --output text
-ecslbhostedzoneid=aws cloudformation describe-stacks --stack-name vpctenant1 --query "Stacks[0].[Outputs[? starts_with(OutputKey, 'ecslbhostedzoneid')]][0][*].{OutputValue:OutputValue}" --output text
-alblistener=aws cloudformation describe-stacks --stack-name vpctenant1 --query "Stacks[0].[Outputs[? starts_with(OutputKey, 'alblistener')]][0][*].{OutputValue:OutputValue}" --output text
+ecscluster=`aws cloudformation describe-stacks --stack-name vpctenant1 --query "Stacks[0].[Outputs[? starts_with(OutputKey, 'ecscluster')]][0][*].{OutputValue:OutputValue}" --output text`
+ecslbarn=`aws cloudformation describe-stacks --stack-name vpctenant1 --query "Stacks[0].[Outputs[? starts_with(OutputKey, 'ecslbarn')]][0][*].{OutputValue:OutputValue}" --output text`
+ecslbdnsname=`aws cloudformation describe-stacks --stack-name vpctenant1 --query "Stacks[0].[Outputs[? starts_with(OutputKey, 'ecslbdnsname')]][0][*].{OutputValue:OutputValue}" --output text`
+ecslbhostedzoneid=`aws cloudformation describe-stacks --stack-name vpctenant1 --query "Stacks[0].[Outputs[? starts_with(OutputKey, 'ecslbhostedzoneid')]][0][*].{OutputValue:OutputValue}" --output text`
+alblistener=`aws cloudformation describe-stacks --stack-name vpctenant1 --query "Stacks[0].[Outputs[? starts_with(OutputKey, 'alblistener')]][0][*].{OutputValue:OutputValue}" --output text`
 
 #package and deploy an instance
 aws cloudformation package --template-file moodletenant.yml --output-template-file moodletenant-output.yml \
