@@ -14,11 +14,11 @@ dependencies:
 
 test: 
   post: 
-    - sh ./cloudformation_test.sh moodle-ecs-single tenant1 tenant2
+    - sh ./cloudformation_test.sh moodle-ecs-single moodle-ecs-tenant moodle-ecs-tenant1
 deployment: 
   development: 
     branch: moodle29
     commands: 
       - aws s3 cp cloudformation/ecs.yml s3://moodle.templates/ecs/ecs.yml
       - aws s3 cp cloudformation/moodle_tenant.yml s3://moodle.templates/ecstenant/moodle_tenant.yml
-      - sh ./cleanup.sh moodle-ecs-single tenant1 tenant2
+      - sh ./cleanup.sh moodle-ecs-single moodle-ecs-tenant moodle-ecs-tenant1
