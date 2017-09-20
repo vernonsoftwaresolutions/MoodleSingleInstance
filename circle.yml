@@ -14,7 +14,8 @@ dependencies:
 
 test: 
   post: 
-    - sh ./cloudformation_test.sh moodle-ecs-single moodle-ecs-tenant moodle-ecs-tenant1
+    - sh ./cloudformation_test.sh moodle-ecs-single moodle-ecs-tenant moodle-ecs-tenant1:
+       timeout: 1800
 deployment: 
   development: 
     branch: moodle29
