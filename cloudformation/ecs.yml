@@ -97,10 +97,16 @@ Resources:
       ToPort: '80'
       SourceSecurityGroupId: !Ref 'HttpSecurityGroup'
 
+  WebSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Web Security Group between ELB and the World
+      VpcId: !Ref 'VpcId'
+
   WebSecurityGroupHTTPinbound:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
-      GroupId: !Ref 'EcsSecurityGroup'
+      GroupId: !Ref 'WebSecurityGroup'
       IpProtocol: tcp
       FromPort: '443'
       ToPort: '443'
@@ -134,7 +140,7 @@ Resources:
       Subnets: !Ref 'SubnetId'
       SecurityGroups: 
       - !Ref 'HttpSecurityGroup'
-      - !Ref 'WebSecurityGroupHTTPinbound'
+      - !Ref 'WebSecurityGroup'
 
   ##
   # AWS managed certificate
@@ -206,7 +212,7 @@ Resources:
       ImageId: !FindInMap [AWSRegionToAMI, !Ref 'AWS::Region', AMIID]
       SecurityGroups: 
       - !Ref EcsSecurityGroup
-      - !Ref HttpSecurityGroupInbound
+      - !Ref WebSecurityGroup
       InstanceType: !Ref 'InstanceType'
       IamInstanceProfile: !Ref 'EC2InstanceProfile'
       KeyName: !Ref 'KeyName'
