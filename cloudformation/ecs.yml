@@ -212,7 +212,7 @@ Resources:
       ImageId: !FindInMap [AWSRegionToAMI, !Ref 'AWS::Region', AMIID]
       SecurityGroups: 
       - !Ref EcsSecurityGroup
-      - !Ref WebSecurityGroup
+      - !Ref HttpSecurityGroup
       InstanceType: !Ref 'InstanceType'
       IamInstanceProfile: !Ref 'EC2InstanceProfile'
       KeyName: !Ref 'KeyName'
