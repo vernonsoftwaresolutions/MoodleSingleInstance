@@ -228,8 +228,3 @@ Resources:
   #  Properties:
   #    LogGroupName: !Join ['-', [ECSLogGroup, !Ref 'AWS::StackName']]
   #    RetentionInDays: 14
-Outputs:
-  TenantUrl:
-    Value: !Join [".", [ !Ref ClientName , !Ref HostedZoneName]]
-    Export:
-      Name: TenantUrl

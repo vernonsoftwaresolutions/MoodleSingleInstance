@@ -209,7 +209,7 @@ Outputs:
   ecscluster:
     Value: !Ref 'ECSCluster'
   ecslbdnsname:
-    Description: Your ALB DNS URL
+    Description: ECS ALB DNS URL
     Value: !Join ['', [!GetAtt [ECSLB, DNSName]]]
   ecslbhostedzoneid:
     Description: Your ALB DNS Hosted Zone Id
