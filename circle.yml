@@ -18,7 +18,7 @@ test:
        timeout: 1800
 deployment: 
   development: 
-    branch: moodle29
+    branch: master
     commands: 
       - aws s3 cp cloudformation/ecs.yml s3://moodle.templates/ecs/ecs.yml
       - aws s3 cp cloudformation/moodle_tenant.yml s3://moodle.templates/ecstenant/moodle_tenant.yml
