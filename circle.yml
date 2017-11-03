@@ -9,23 +9,17 @@ machine:
 
 dependencies: 
   override: 
-    - "docker info"
-    - "docker build --rm=false -t vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM ."
+    - "aws configure set default.region us-east-1"
+    - "aws configure set default.output json"
 
 test: 
   post: 
-    - "docker run -d -p 80:80 -e \"VIRTUAL_HOST=localhost\" --name moodle vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM; sleep 10"
-    - "docker ps"
-    - "docker images"
-    - "docker port moodle"
-    - "curl -L http://localhost/moodle"
+    - sh ./cloudformation_test.sh moodle-ecs-single moodle-ecs-tenant moodle-ecs-tenant1:
+       timeout: 1800
 deployment: 
   development: 
     branch: master
     commands: 
-      - "docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS"
-      - "docker push vernonsoftwaresolutions/moodlesingleinstance:$CIRCLE_BUILD_NUM"
-      - "aws configure set default.region us-east-1"
-      - "aws configure set default.output json"
-      - "aws cloudformation package --template-file cloudformation/ecs.yml --output-template-file ecs-output.yml --s3-bucket circleci.deployables"
-      - "aws cloudformation deploy --template-file ecs-output.yml --capabilities CAPABILITY_IAM --stack-name moodle-ecs-single --parameter-overrides Version=$CIRCLE_BUILD_NUM KeyName=dummy_key1 VpcId=vpc-c7aa77be SubnetId=subnet-b61d81fe,subnet-0202dc58 InstanceType=t2.medium"
+      - aws s3 cp cloudformation/ecs.yml s3://moodle.templates/ecs/ecs.yml
+      - aws s3 cp cloudformation/moodle_tenant.yml s3://moodle.templates/ecstenant/moodle_tenant.yml
+      - sh ./cleanup.sh moodle-ecs-single moodle-ecs-tenant moodle-ecs-tenant1
