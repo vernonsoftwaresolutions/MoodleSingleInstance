@@ -104,7 +104,7 @@ Resources:
       ContainerDefinitions:
       -
         Name: "moodle"
-        Image: jauer/moodle
+        Image: jhardison/moodle
         Cpu: "50"
         PortMappings:
           -
