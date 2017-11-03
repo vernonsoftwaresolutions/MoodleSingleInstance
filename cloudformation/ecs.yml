@@ -132,7 +132,7 @@ Resources:
         TargetGroupArn: !Ref 'DEFAULTECSTARGRP'
       LoadBalancerArn: !Ref 'ECSLB'
       Port: '443'
-      Protocol: HTTPs
+      Protocol: HTTPS
 
   DEFAULTECSTARGRP:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
