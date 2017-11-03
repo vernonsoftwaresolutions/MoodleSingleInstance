@@ -115,7 +115,7 @@ Resources:
         - "DB:DB"
         Environment:
         - Name: MOODLE_URL
-          Value: !Join ["", ["http://",  !Join [".", [ !Ref ClientName , !Ref HostedZoneName]] , ""]]
+          Value: !Join ["", ["https://",  !Join [".", [ !Ref ClientName , !Ref HostedZoneName]] , ""]]
         - Name: DB_PORT_3306_TCP_ADDR
           Value: DB
         - Name: DB_ENV_MYSQL_DATABASE

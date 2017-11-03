@@ -61,31 +61,18 @@ Mappings:
     ap-southeast-2:
       AMIID: ami-5781be34
 Resources:
-  ECSCluster:
-    Type: AWS::ECS::Cluster
 
+  ########################################################
+  #
+  # Security Group Definitions
+  #
+  ########################################################
   EcsSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: ECS Security Group
       VpcId: !Ref 'VpcId'
-  EcsSecurityGroupHTTPinbound:
-    Type: AWS::EC2::SecurityGroupIngress
-    Properties:
-      GroupId: !Ref 'EcsSecurityGroup'
-      IpProtocol: tcp
-      FromPort: '80'
-      ToPort: '80'
-      CidrIp: 0.0.0.0/0
-  EcsSecurityGroupSSHinbound:
-    Type: AWS::EC2::SecurityGroupIngress
-    Properties:
-      GroupId: !Ref 'EcsSecurityGroup'
-      IpProtocol: tcp
-      FromPort: '22'
-      ToPort: '22'
-      CidrIp: 0.0.0.0/0
-
+  
   EcsSecurityGroupALBports:
     Type: AWS::EC2::SecurityGroupIngress
     Properties:
@@ -95,11 +82,47 @@ Resources:
       ToPort: '61000'
       SourceSecurityGroupId: !Ref 'EcsSecurityGroup'
 
+  HttpSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Http Security Group between ELB and ECS Cluster
+      VpcId: !Ref 'VpcId'
+ 
+  HttpSecurityGroupInbound:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref 'HttpSecurityGroup'
+      IpProtocol: tcp
+      FromPort: '80'
+      ToPort: '80'
+      SourceSecurityGroupId: !Ref 'HttpSecurityGroup'
+
+  WebSecurityGroupHTTPinbound:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref 'EcsSecurityGroup'
+      IpProtocol: tcp
+      FromPort: '443'
+      ToPort: '443'
+      CidrIp: 0.0.0.0/0
+      
+  # EcsSecurityGroupSSHinbound:
+  #   Type: AWS::EC2::SecurityGroupIngress
+  #   Properties:
+  #     GroupId: !Ref 'EcsSecurityGroup'
+  #     IpProtocol: tcp
+  #     FromPort: '22'
+  #     ToPort: '22'
+  #     CidrIp: 0.0.0.0/0
+
+
+
   ########################################################
   #
   # Elastic Load Balancer Configuration
   #
   ########################################################
+
   ECSLB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -109,7 +132,9 @@ Resources:
       - Key: idle_timeout.timeout_seconds
         Value: '30'
       Subnets: !Ref 'SubnetId'
-      SecurityGroups: [!Ref 'EcsSecurityGroup']
+      SecurityGroups: 
+      - !Ref 'HttpSecurityGroupInbound'
+      - !Ref 'WebSecurityGroupHTTPinbound'
 
   ##
   # AWS managed certificate
@@ -165,11 +190,23 @@ Resources:
     UpdatePolicy:
       AutoScalingReplacingUpdate:
         WillReplace: 'true'
+
+  ########################################################
+  #
+  # ECS Cluster Definition
+  #
+  ########################################################
+
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+
   ContainerInstances:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
       ImageId: !FindInMap [AWSRegionToAMI, !Ref 'AWS::Region', AMIID]
-      SecurityGroups: [!Ref 'EcsSecurityGroup']
+      SecurityGroups: 
+      - !Ref EcsSecurityGroup
+      - !Ref HttpSecurityGroupInbound
       InstanceType: !Ref 'InstanceType'
       IamInstanceProfile: !Ref 'EC2InstanceProfile'
       KeyName: !Ref 'KeyName'
@@ -205,6 +242,7 @@ Resources:
     Properties:
       Path: /
       Roles: [!Ref 'EC2Role']
+
 Outputs:
   ecscluster:
     Value: !Ref 'ECSCluster'
