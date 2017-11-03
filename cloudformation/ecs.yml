@@ -118,7 +118,7 @@ Resources:
     Type: AWS::CertificateManager::Certificate
     Properties:
       DomainName: 
-        !Join [-, ["*.", !Ref DomainName]]
+        !Join ["", ["*.", !Ref DomainName]]
 
   #create listener and default target group
   ALBListener:
