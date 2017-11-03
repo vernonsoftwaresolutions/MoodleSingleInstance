@@ -133,7 +133,7 @@ Resources:
         Value: '30'
       Subnets: !Ref 'SubnetId'
       SecurityGroups: 
-      - !Ref 'HttpSecurityGroupInbound'
+      - !Ref 'HttpSecurityGroup'
       - !Ref 'WebSecurityGroupHTTPinbound'
 
   ##
