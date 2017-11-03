@@ -21,12 +21,12 @@ alblistener=`aws cloudformation describe-stacks --stack-name "${ecstemplate}" --
 
 #package and deploy an instance
 aws cloudformation package --template-file cloudformation/moodle_tenant.yml --output-template-file moodletenant-output.yml --s3-bucket circleci.deployables
-aws cloudformation deploy --template-file moodletenant-output.yml --capabilities CAPABILITY_IAM --stack-name "${moodle1}" --parameter-overrides VpcId=vpc-c7aa77be Priority=1 ecscluster="${ecscluster}" ecslbarn="${ecslbarn}" ecslbdnsname="${ecslbdnsname}"	 ecslbhostedzoneid="${ecslbhostedzoneid}" alblistener="${alblistener}" HostedZoneName=vssdevelopment.com  ClientName=brad
+aws cloudformation deploy --template-file moodletenant-output.yml --capabilities CAPABILITY_IAM --stack-name "${moodle1}" --parameter-overrides VpcId=vpc-c7aa77be Priority=1 ecscluster="${ecscluster}" ecslbarn="${ecslbarn}" ecslbdnsname="${ecslbdnsname}"	 ecslbhostedzoneid="${ecslbhostedzoneid}" alblistener="${alblistener}" HostedZoneName=vssdevelopment.com  ClientName=brad DomainName=vssdevelopment.com
 #just send basic test
 sleep 15
 curl https://brad.vssdevelopment.com/
 aws cloudformation package --template-file cloudformation/moodle_tenant.yml --output-template-file moodletenant-output.yml --s3-bucket circleci.deployables
-aws cloudformation deploy --template-file moodletenant-output.yml --capabilities CAPABILITY_IAM --stack-name "${moodle2}" --parameter-overrides VpcId=vpc-c7aa77be Priority=2 ecscluster="${ecscluster}" ecslbarn="${ecslbarn}"	ecslbdnsname="${ecslbdnsname}" ecslbhostedzoneid="${ecslbhostedzoneid}" alblistener="${alblistener}"  HostedZoneName=vssdevelopment.com  ClientName=alec
+aws cloudformation deploy --template-file moodletenant-output.yml --capabilities CAPABILITY_IAM --stack-name "${moodle2}" --parameter-overrides VpcId=vpc-c7aa77be Priority=2 ecscluster="${ecscluster}" ecslbarn="${ecslbarn}"	ecslbdnsname="${ecslbdnsname}" ecslbhostedzoneid="${ecslbhostedzoneid}" alblistener="${alblistener}"  HostedZoneName=vssdevelopment.com  ClientName=alec DomainName=vssdevelopment.com
 #just send basic test
 sleep 15
 
