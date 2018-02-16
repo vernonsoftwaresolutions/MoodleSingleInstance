@@ -75,7 +75,7 @@ Resources:
       Port: 80
       Protocol: HTTP
       Matcher:
-        HttpCode: '200'
+        HttpCode: '303'
       UnhealthyThresholdCount: 2
       TargetGroupAttributes:
       - Key: deregistration_delay.timeout_seconds
