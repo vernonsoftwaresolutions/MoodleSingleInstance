@@ -74,6 +74,8 @@ Resources:
       Name: !Ref ClientName
       Port: 80
       Protocol: HTTP
+      Matcher:
+        HttpCode: '200'
       UnhealthyThresholdCount: 2
       TargetGroupAttributes:
       - Key: deregistration_delay.timeout_seconds
