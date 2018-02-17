@@ -175,6 +175,8 @@ Resources:
       HealthyThresholdCount: 2
       Name: "DEFAULT"
       Port: 80
+      Matcher:
+        HttpCode: '303'
       Protocol: HTTP
       UnhealthyThresholdCount: 2
       TargetGroupAttributes:
